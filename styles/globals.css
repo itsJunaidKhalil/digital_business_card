@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: white;
+  --foreground: black;
+  --bg: white;
+  --text: black;
+}
+
+[data-theme="dark"] {
+  --background: #111;
+  --foreground: white;
+  --bg: #111;
+  --text: white;
+}
+
+[data-theme="blue"] {
+  --background: #eff6ff;
+  --foreground: #1e3a8a;
+  --bg: #eff6ff;
+  --text: #1e3a8a;
+}
+
+[data-theme="green"] {
+  --background: #f0fdf4;
+  --foreground: #166534;
+  --bg: #f0fdf4;
+  --text: #166534;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
