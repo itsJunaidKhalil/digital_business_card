@@ -40,10 +40,13 @@ export default function LoginPage() {
     setError("");
 
     try {
+      // Get the correct redirect URL from environment or use current origin
+      const redirectUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${redirectUrl}/auth/callback`,
         },
       });
 

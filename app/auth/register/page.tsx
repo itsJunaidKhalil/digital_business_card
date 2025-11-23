@@ -25,7 +25,7 @@ export default function RegisterPage() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/dashboard`,
         },
       });
 
@@ -57,10 +57,13 @@ export default function RegisterPage() {
     setError("");
 
     try {
+      // Get the correct redirect URL from environment or use current origin
+      const redirectUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${redirectUrl}/auth/callback`,
         },
       });
 
