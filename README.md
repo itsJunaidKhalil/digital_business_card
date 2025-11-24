@@ -12,6 +12,7 @@ A full-stack platform where users can create customizable profiles, share social
 - ✅ Analytics tracking (profile views, link clicks)
 - ✅ Theme customization
 - ✅ NFC keychain integration support
+- ✅ Forgot password / password reset flow
 
 ## Tech Stack
 
@@ -148,7 +149,24 @@ with check (true);
      - `banners` (public)
    - Set up storage policies to allow authenticated users to upload
 
-7. **Run the development server**
+7. **Configure Supabase Authentication URLs**
+   - In Supabase Dashboard:
+     - Go to **Authentication** → **URL Configuration**
+     - Set **Site URL** to your local URL for development (`http://localhost:3000`)
+     - Add the following **Redirect URLs** (one per line):
+       ```
+       http://localhost:3000/auth/callback
+       http://localhost:3000/auth/update-password
+       ```
+   - For production (after deploying to Vercel):
+     - Update **Site URL** to your Vercel URL (e.g., `https://your-app.vercel.app`)
+     - Update Redirect URLs to:
+       ```
+       https://your-app.vercel.app/auth/callback
+       https://your-app.vercel.app/auth/update-password
+       ```
+
+8. **Run the development server**
 
 ```bash
 npm run dev
@@ -161,6 +179,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 /app
   /auth          # Login and registration pages
+      forgot-password/page.tsx
+      update-password/page.tsx
   /dashboard     # User dashboard pages
   /api           # API routes
   /[username]    # Public profile pages
