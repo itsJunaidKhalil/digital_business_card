@@ -15,7 +15,16 @@ export async function GET(
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
+    // Log for debugging - verify we're getting the correct profile
+    console.log(`[API] Fetching links for username: ${username}, profile.id: ${profile.id}`);
+    
     const links = await getSocialLinks(profile.id);
+    
+    // Log for debugging - verify we're getting the correct links
+    console.log(`[API] Found ${links.length} links for profile.id: ${profile.id}`);
+    if (links.length > 0) {
+      console.log(`[API] First link user_id: ${links[0].user_id}, expected: ${profile.id}`);
+    }
 
     // Set cache control headers to prevent caching
     const response = NextResponse.json({ links, error: null });
