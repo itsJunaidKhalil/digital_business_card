@@ -20,15 +20,15 @@ export default async function ProfilePage({
       const { createServerClient } = await import("@/lib/supabase-server");
       const supabase = createServerClient();
       
-      const { data: redirect } = await supabase
+      const { data: redirectData } = await supabase
         .from("username_redirects")
         .select("new_username")
         .eq("old_username", params.username)
         .single();
       
-      if (redirect?.new_username) {
+      if (redirectData?.new_username) {
         // Redirect to new username (301 permanent redirect)
-        redirect(`/${redirect.new_username}`);
+        redirect(`/${redirectData.new_username}`);
       }
       
       notFound();
