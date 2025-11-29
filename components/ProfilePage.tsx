@@ -30,8 +30,36 @@ interface ProfilePageProps {
   links: SocialLink[];
 }
 
-export default function ProfilePageContent({ profile, links }: ProfilePageProps) {
+export default function ProfilePageContent({ profile, links: initialLinks }: ProfilePageProps) {
   const [copied, setCopied] = useState(false);
+  const [links, setLinks] = useState<SocialLink[]>(initialLinks);
+  const [loadingLinks, setLoadingLinks] = useState(false);
+
+  // Fetch links dynamically to get latest updates
+  useEffect(() => {
+    const fetchLinks = async () => {
+      setLoadingLinks(true);
+      try {
+        const response = await fetch(`/api/profile/${profile.username}/links`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.links) {
+            setLinks(data.links);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching links:", error);
+      } finally {
+        setLoadingLinks(false);
+      }
+    };
+
+    // Fetch links on mount and set up polling for updates
+    fetchLinks();
+    const interval = setInterval(fetchLinks, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [profile.username]);
 
   useEffect(() => {
     // Track profile view
@@ -116,16 +144,16 @@ export default function ProfilePageContent({ profile, links }: ProfilePageProps)
       <div className="max-w-2xl mx-auto">
         {/* Share Button - Top Right */}
         {profile.username && (
-          <div className="fixed top-20 right-4 z-50 sm:absolute sm:top-4">
+          <div className="absolute top-4 right-4 z-10">
             <button
               onClick={handleShare}
-              className="p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+              className="p-2 sm:p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
               title="Share profile"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
               </svg>
-              {copied && <span className="text-xs whitespace-nowrap">Copied!</span>}
+              {copied && <span className="text-xs whitespace-nowrap hidden sm:inline">Copied!</span>}
             </button>
           </div>
         )}
@@ -180,7 +208,11 @@ export default function ProfilePageContent({ profile, links }: ProfilePageProps)
 
           {/* Social Links Section */}
           <div className="mb-6">
-            {links && links.length > 0 ? (
+            {loadingLinks ? (
+              <div className="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
+                Loading links...
+              </div>
+            ) : links && links.length > 0 ? (
               <div className="space-y-3">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 text-center sm:text-left">
                   Connect with me
