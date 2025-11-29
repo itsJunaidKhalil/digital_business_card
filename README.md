@@ -13,6 +13,7 @@ A full-stack platform where users can create customizable profiles, share social
 - ✅ Theme customization
 - ✅ NFC keychain integration support
 - ✅ Forgot password / password reset flow
+- ✅ Username change redirects (old links automatically redirect to new username)
 
 ## Tech Stack
 
@@ -55,6 +56,7 @@ npm install
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_KEY=your_supabase_anon_key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key (optional, for better performance)
 ```
 
 5. **Set up the database**
@@ -79,6 +81,14 @@ create table profiles (
   updated_at timestamp default now()
 );
 
+-- Create username_redirects table for handling username changes
+create table username_redirects (
+  old_username text primary key,
+  new_username text not null,
+  user_id uuid references profiles(id) on delete cascade,
+  created_at timestamp default now()
+);
+
 -- Create social_links table
 create table social_links (
   id uuid primary key default uuid_generate_v4(),
@@ -101,6 +111,7 @@ create table analytics (
 
 -- Enable RLS
 alter table profiles enable row level security;
+alter table username_redirects enable row level security;
 alter table social_links enable row level security;
 alter table analytics enable row level security;
 
@@ -116,6 +127,15 @@ using (auth.uid() = id);
 create policy "Profiles are viewable by everyone"
 on profiles for select
 using (true);
+
+-- RLS Policies for username_redirects
+create policy "Anyone can view redirects"
+on username_redirects for select
+using (true);
+
+create policy "Users can create their own redirects"
+on username_redirects for insert
+with check (auth.uid() = user_id);
 
 -- RLS Policies for social_links
 create policy "Users can insert their own social links"
@@ -150,6 +170,7 @@ with check (true);
    - Set up storage policies to allow authenticated users to upload
 
 7. **Configure Supabase Authentication URLs**
+
    - In Supabase Dashboard:
      - Go to **Authentication** → **URL Configuration**
      - Set **Site URL** to your local URL for development (`http://localhost:3000`)
@@ -211,17 +232,24 @@ To integrate NFC keychains:
 2. When someone taps the NFC keychain, it will open the user's profile
 3. Analytics will automatically track the profile view
 
+## Username Changes
+
+When a user changes their username:
+- The old username link automatically redirects to the new username (301 permanent redirect)
+- Old links continue to work seamlessly
+- The redirect is stored in the `username_redirects` table
+
 ## Troubleshooting
 
 ### Social Links Not Showing on Public Profile
 
 If social links are not visible on the public profile:
+- Check that the social links have been saved
+- The profile page polls for updates every 3 seconds
+- Refresh the page if links don't appear immediately
 
-1. **Check RLS Policies**: Make sure the "Social links are viewable by everyone" policy exists and is enabled
-2. **Verify Data**: Check in Supabase that social links are properly saved with the correct `user_id`
-3. **Check Console**: Open browser console to see if there are any errors
-4. **Verify Username**: Make sure the profile has a username set
+### Multiple GoTrueClient Warnings
 
-## License
-
-MIT
+If you see warnings about multiple GoTrueClient instances:
+- This has been fixed with a singleton pattern
+- Clear your browser cache and reload

@@ -52,10 +52,10 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    // First, check if profile exists
+    // First, check if profile exists and get current username
     const { data: existingProfile } = await supabase
       .from("profiles")
-      .select("id")
+      .select("id, username")
       .eq("id", id)
       .single();
 
@@ -63,6 +63,10 @@ export async function POST(req: NextRequest) {
     let error;
 
     if (existingProfile) {
+      // Check if username is being changed
+      const oldUsername = existingProfile.username;
+      const newUsername = updateData.username;
+      
       // Profile exists, update it
       const result = await supabase
         .from("profiles")
@@ -73,6 +77,25 @@ export async function POST(req: NextRequest) {
       
       data = result.data;
       error = result.error;
+      
+      // If username changed, create a redirect entry
+      if (!error && oldUsername && newUsername && oldUsername !== newUsername) {
+        // Check if username_redirects table exists, if not we'll create it via SQL
+        // For now, we'll store it in a simple table
+        try {
+          await supabase.from("username_redirects").upsert({
+            old_username: oldUsername,
+            new_username: newUsername,
+            user_id: id,
+            created_at: new Date().toISOString(),
+          }, {
+            onConflict: "old_username"
+          });
+        } catch (redirectError) {
+          // Table might not exist yet, log but don't fail
+          console.warn("Could not create username redirect:", redirectError);
+        }
+      }
     } else {
       // Profile doesn't exist, create it
       const result = await supabase

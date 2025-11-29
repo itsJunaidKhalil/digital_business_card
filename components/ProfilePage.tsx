@@ -38,9 +38,15 @@ export default function ProfilePageContent({ profile, links: initialLinks }: Pro
   // Fetch links dynamically to get latest updates
   useEffect(() => {
     const fetchLinks = async () => {
-      setLoadingLinks(true);
       try {
-        const response = await fetch(`/api/profile/${profile.username}/links`);
+        // Add cache-busting query parameter
+        const timestamp = Date.now();
+        const response = await fetch(`/api/profile/${profile.username}/links?t=${timestamp}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           if (data.links) {
@@ -54,9 +60,11 @@ export default function ProfilePageContent({ profile, links: initialLinks }: Pro
       }
     };
 
-    // Fetch links on mount and set up polling for updates
+    // Fetch links immediately
     fetchLinks();
-    const interval = setInterval(fetchLinks, 5000); // Poll every 5 seconds
+    
+    // Set up polling for updates (every 3 seconds for faster updates)
+    const interval = setInterval(fetchLinks, 3000);
 
     return () => clearInterval(interval);
   }, [profile.username]);
