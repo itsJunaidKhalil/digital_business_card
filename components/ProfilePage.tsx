@@ -27,12 +27,11 @@ interface SocialLink {
 
 interface ProfilePageProps {
   profile: Profile;
-  links: SocialLink[];
 }
 
-export default function ProfilePageContent({ profile, links: initialLinks }: ProfilePageProps) {
+export default function ProfilePageContent({ profile }: ProfilePageProps) {
   const [copied, setCopied] = useState(false);
-  const [links, setLinks] = useState<SocialLink[]>(initialLinks || []);
+  const [links, setLinks] = useState<SocialLink[]>([]);
   const [loadingLinks, setLoadingLinks] = useState(false);
   const linksFetchedRef = useRef(false);
 
@@ -48,20 +47,16 @@ export default function ProfilePageContent({ profile, links: initialLinks }: Pro
             'Cache-Control': 'no-cache',
           },
         });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.links && Array.isArray(data.links)) {
-            // Always update with fresh data from API
-            setLinks(data.links);
-            linksFetchedRef.current = true;
-          }
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (data.links && Array.isArray(data.links)) {
+          // Always update with fresh data from API
+          setLinks(data.links);
+          linksFetchedRef.current = true;
         }
       } catch (error) {
         console.error("Error fetching links:", error);
-        // Only use initialLinks as fallback if we've never successfully fetched
-        if (!linksFetchedRef.current && initialLinks && initialLinks.length > 0) {
-          setLinks(initialLinks);
-        }
       } finally {
         setLoadingLinks(false);
       }
@@ -74,7 +69,7 @@ export default function ProfilePageContent({ profile, links: initialLinks }: Pro
     const interval = setInterval(fetchLinks, 3000);
 
     return () => clearInterval(interval);
-  }, [profile.username, initialLinks]);
+  }, [profile.username]);
 
   useEffect(() => {
     // Track profile view

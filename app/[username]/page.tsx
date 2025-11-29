@@ -1,6 +1,5 @@
 import { notFound, redirect } from "next/navigation";
 import { getProfile } from "@/lib/getProfile";
-import { getSocialLinks } from "@/lib/getSocialLinks";
 import ProfilePageContent from "@/components/ProfilePage";
 
 // Disable caching for this page to ensure fresh data
@@ -34,13 +33,7 @@ export default async function ProfilePage({
       notFound();
     }
 
-    // Fetch social links for this profile
-    const links = await getSocialLinks(profile.id);
-    
-    // Log for debugging (remove in production)
-    console.log(`Profile ${profile.username} has ${links.length} social links`);
-
-    return <ProfilePageContent profile={profile} links={links} />;
+    return <ProfilePageContent profile={profile} />;
   } catch (error) {
     console.error("Error loading profile:", error);
     notFound();
