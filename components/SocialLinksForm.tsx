@@ -13,6 +13,7 @@ interface SocialLink {
 interface SocialLinksFormProps {
   userId: string;
   initialLinks?: SocialLink[];
+  onLinkAdded?: () => void;
 }
 
 const PLATFORMS = [
@@ -121,7 +122,7 @@ const PLATFORMS = [
   },
 ];
 
-export default function SocialLinksForm({ userId, initialLinks = [] }: SocialLinksFormProps) {
+export default function SocialLinksForm({ userId, initialLinks = [], onLinkAdded }: SocialLinksFormProps) {
   const [links, setLinks] = useState<SocialLink[]>(initialLinks);
   const [newPlatform, setNewPlatform] = useState("");
   const [newUrl, setNewUrl] = useState("");
@@ -195,12 +196,18 @@ export default function SocialLinksForm({ userId, initialLinks = [] }: SocialLin
         throw new Error(result.error || "Failed to add link");
       }
 
+      // Add the new link to the list immediately
       setLinks([...links, result.data[0]]);
       setNewPlatform("");
       setNewUrl("");
       setShowAddForm(false);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
+      
+      // Notify parent to reload links
+      if (onLinkAdded) {
+        onLinkAdded();
+      }
     } catch (error: any) {
       console.error("Error adding link:", error);
       setError(error.message || "Error adding link. Please try again.");

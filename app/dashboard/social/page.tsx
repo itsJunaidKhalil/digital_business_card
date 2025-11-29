@@ -55,7 +55,11 @@ export default function SocialPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-8">Social Links</h1>
         <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow">
-          <SocialLinksForm userId={user.id} initialLinks={links} />
+          <SocialLinksForm 
+            userId={user.id} 
+            initialLinks={links}
+            onLinkAdded={() => loadLinks(user.id)}
+          />
         </div>
       </div>
     </div>

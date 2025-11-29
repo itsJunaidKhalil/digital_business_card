@@ -14,6 +14,15 @@ export default function AuthCallback() {
         console.log("Handling auth callback...");
         console.log("Current URL:", window.location.href);
         console.log("Hash:", window.location.hash);
+        console.log("Search:", window.location.search);
+
+        // First, check if we already have a session (Supabase might have set it automatically)
+        const { data: { session: existingSession } } = await supabase.auth.getSession();
+        if (existingSession?.user) {
+          console.log("Session already exists, redirecting...");
+          router.push("/dashboard");
+          return;
+        }
 
         // Handle hash-based redirect (from OAuth - Supabase uses hash fragments)
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -86,25 +95,42 @@ export default function AuthCallback() {
             throw new Error("No user data received");
           }
         } else {
-          // No tokens in hash - might be a different flow
-          console.log("No tokens in hash, checking for code...");
-          
-          // Check if there's a code in query params (server-side flow)
+          // Check query params for code (PKCE flow)
           const urlParams = new URLSearchParams(window.location.search);
           const code = urlParams.get("code");
           
           if (code) {
-            console.log("Code found, waiting for server redirect...");
-            // Server route should handle this, but wait a moment
-            setTimeout(() => {
+            console.log("Code found in query params, exchanging for session...");
+            // Exchange code for session
+            const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+            
+            if (exchangeError) {
+              console.error("Code exchange error:", exchangeError);
+              throw exchangeError;
+            }
+            
+            if (data.user) {
+              // Clear query params and redirect
+              window.history.replaceState(null, "", window.location.pathname);
               router.push("/dashboard");
-            }, 1000);
+              router.refresh();
+            } else {
+              throw new Error("No user data after code exchange");
+            }
           } else {
-            console.error("No authentication data found");
-            setError("No authentication data received");
-            setTimeout(() => {
-              router.push("/auth/login?error=No authentication data received");
-            }, 2000);
+            // Wait a bit and check session again (sometimes Supabase sets it automatically)
+            setTimeout(async () => {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (session?.user) {
+                router.push("/dashboard");
+              } else {
+                console.error("No authentication data found");
+                setError("No authentication data received");
+                setTimeout(() => {
+                  router.push("/auth/login?error=No authentication data received");
+                }, 2000);
+              }
+            }, 1000);
           }
         }
       } catch (error: any) {

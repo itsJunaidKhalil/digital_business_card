@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SocialButton from "./SocialButton";
 import Image from "next/image";
 
@@ -31,6 +31,8 @@ interface ProfilePageProps {
 }
 
 export default function ProfilePageContent({ profile, links }: ProfilePageProps) {
+  const [copied, setCopied] = useState(false);
+
   useEffect(() => {
     // Track profile view
     const trackView = async () => {
@@ -53,6 +55,33 @@ export default function ProfilePageContent({ profile, links }: ProfilePageProps)
 
     trackView();
   }, [profile.id]);
+
+  const handleShare = async () => {
+    const baseUrl = typeof window !== "undefined" 
+      ? window.location.origin 
+      : process.env.NEXT_PUBLIC_APP_URL || "https://yourapp.com";
+    const profileUrl = `${baseUrl}/${profile.username}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${profile.full_name || profile.username}'s Digital Card`,
+          text: `Check out ${profile.full_name || profile.username}'s digital business card`,
+          url: profileUrl,
+        });
+      } catch (err) {
+        // User cancelled or error occurred, fall back to copy
+        navigator.clipboard.writeText(profileUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } else {
+      // Fallback to copy if Web Share API is not available
+      navigator.clipboard.writeText(profileUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   const handleLinkClick = async (linkId: string) => {
     const platform = /Mobile|Android|iPhone|iPad/.test(navigator.userAgent)
@@ -83,8 +112,24 @@ export default function ProfilePageContent({ profile, links }: ProfilePageProps)
   }, [links]);
 
   return (
-    <div data-theme={theme} className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
+    <div data-theme={theme} className="min-h-screen bg-[var(--bg)] text-[var(--text)] relative">
       <div className="max-w-2xl mx-auto">
+        {/* Share Button - Top Right */}
+        {profile.username && (
+          <div className="fixed top-20 right-4 z-50 sm:absolute sm:top-4">
+            <button
+              onClick={handleShare}
+              className="p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+              title="Share profile"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+              {copied && <span className="text-xs whitespace-nowrap">Copied!</span>}
+            </button>
+          </div>
+        )}
+
         {/* Banner */}
         {profile.banner_image_url && (
           <div className="relative w-full h-40 sm:h-48 md:h-64">

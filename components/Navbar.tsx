@@ -40,7 +40,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link 
-              href="/" 
+              href={user ? "/dashboard" : "/"} 
               className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               Digital Card
