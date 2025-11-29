@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { getSocialLinks } from "@/lib/getSocialLinks";
 import Navbar from "@/components/Navbar";
 import SocialLinksForm from "@/components/SocialLinksForm";
 
@@ -26,10 +25,31 @@ export default function SocialPage() {
 
   const loadLinks = async (userId: string) => {
     try {
-      const linksData = await getSocialLinks(userId);
-      setLinks(linksData);
+      // Get authenticated session to pass token
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        console.error("No session found");
+        setLinks([]);
+        return;
+      }
+
+      // Use authenticated API route instead of server function
+      const response = await fetch(`/api/social/list?user_id=${userId}`, {
+        headers: {
+          "Authorization": `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch links");
+      }
+
+      const result = await response.json();
+      setLinks(result.data || []);
     } catch (error) {
       console.error("Error loading links:", error);
+      setLinks([]);
     } finally {
       setLoading(false);
     }
