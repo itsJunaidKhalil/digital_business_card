@@ -3,6 +3,9 @@
 import { useEffect, useState, useRef } from "react";
 import SocialButton from "./SocialButton";
 import Image from "next/image";
+import ThemeToggle from "./ThemeToggle";
+import ProfileThemeToggle from "./ProfileThemeToggle";
+import { ThemeName } from "@/utils/themes";
 
 // Import PLATFORMS for footer icons
 const PLATFORMS = [
@@ -129,6 +132,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
   const [links, setLinks] = useState<SocialLink[]>([]);
   const [loadingLinks, setLoadingLinks] = useState(false);
   const linksFetchedRef = useRef(false);
+  const [localTheme, setLocalTheme] = useState<ThemeName>((profile.theme as ThemeName) || "default");
 
   // Fetch links dynamically to get latest updates
   useEffect(() => {
@@ -234,10 +238,29 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
     });
   };
 
-  const theme = profile.theme || "default";
+  const theme = localTheme || profile.theme || "default";
   const baseUrl = typeof window !== "undefined" 
     ? window.location.origin 
     : process.env.NEXT_PUBLIC_APP_URL || "https://yourapp.com";
+
+  const handleThemeChange = (newTheme: ThemeName) => {
+    setLocalTheme(newTheme);
+    // Store in localStorage for persistence during session
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`profile-theme-${profile.id}`, newTheme);
+    }
+  };
+
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem(`profile-theme-${profile.id}`) as ThemeName | null;
+      if (savedTheme) {
+        setLocalTheme(savedTheme);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile.id]);
 
   // Debug: Log links to console
   useEffect(() => {
@@ -252,7 +275,12 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
           <div className="absolute top-4 right-4 z-10">
             <button
               onClick={handleShare}
-              className="glass p-3 sm:p-4 rounded-2xl shadow-soft-lg hover:shadow-glow transition-all duration-300 flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transform hover:scale-105"
+              className="glass p-3 sm:p-4 rounded-2xl shadow-soft-lg hover:shadow-glow transition-all duration-300 flex items-center gap-2 transform hover:scale-105"
+              style={{ 
+                backgroundColor: 'var(--glass-bg)', 
+                borderColor: 'var(--glass-border)',
+                color: 'var(--text)'
+              }}
               title="Share profile"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -370,14 +398,15 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                 {profile.phone && (
                   <a
                     href={`tel:${profile.phone}`}
-                    className="flex items-center gap-4 justify-center sm:justify-start p-3 rounded-2xl hover:bg-white/50 dark:hover:bg-white/5 transition-all group"
+                    className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/50 dark:hover:bg-white/5 transition-all group"
+                    style={{ backgroundColor: 'transparent' }}
                   >
-                    <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform flex-shrink-0">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
                     </div>
-                    <span className="font-medium transition-colors" style={{ color: 'var(--text)' }}>
+                    <span className="font-medium transition-colors flex-1" style={{ color: 'var(--text)' }}>
                       {profile.phone}
                     </span>
                   </a>
@@ -385,14 +414,15 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                 {profile.email && (
                   <a
                     href={`mailto:${profile.email}`}
-                    className="flex items-center gap-4 justify-center sm:justify-start p-3 rounded-2xl hover:bg-white/50 dark:hover:bg-white/5 transition-all group"
+                    className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/50 dark:hover:bg-white/5 transition-all group"
+                    style={{ backgroundColor: 'transparent' }}
                   >
-                    <div className="w-12 h-12 bg-gradient-secondary rounded-xl flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-gradient-secondary rounded-xl flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform flex-shrink-0">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <span className="font-medium transition-colors" style={{ color: 'var(--text)' }}>
+                    <span className="font-medium transition-colors flex-1" style={{ color: 'var(--text)' }}>
                       {profile.email}
                     </span>
                   </a>
@@ -402,14 +432,15 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                     href={profile.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-4 justify-center sm:justify-start p-3 rounded-2xl hover:bg-white/50 dark:hover:bg-white/5 transition-all group"
+                    className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/50 dark:hover:bg-white/5 transition-all group"
+                    style={{ backgroundColor: 'transparent' }}
                   >
-                    <div className="w-12 h-12 bg-gradient-accent rounded-xl flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-gradient-accent rounded-xl flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform flex-shrink-0">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                       </svg>
                     </div>
-                    <span className="font-medium group-hover:underline transition-colors" style={{ color: 'var(--text)' }}>
+                    <span className="font-medium group-hover:underline transition-colors flex-1" style={{ color: 'var(--text)' }}>
                       {profile.website}
                     </span>
                   </a>
@@ -436,7 +467,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
 
           {/* Social Icons Footer */}
           {links && links.length > 0 && (
-            <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--text)', opacity: 0.1 }}>
+            <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--text)', opacity: 0.2 }}>
               <div className="flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
                 {links.map((link) => {
                   const platformData = PLATFORMS.find(
@@ -456,8 +487,13 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => handleLinkClick(link.id)}
-                      className="w-10 h-10 rounded-full glass flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-glow"
-                      style={{ color: 'var(--text)' }}
+                      className="w-12 h-12 rounded-full glass flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-glow"
+                      style={{ 
+                        color: 'var(--text)', 
+                        backgroundColor: 'var(--glass-bg)',
+                        borderColor: 'var(--glass-border)',
+                        opacity: 0.9
+                      }}
                       aria-label={link.platform}
                     >
                       {icon}
@@ -469,11 +505,11 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
           )}
 
           {/* Footer Links */}
-          <div className="mt-8 pt-6 border-t text-center" style={{ borderColor: 'var(--text)', opacity: 0.1 }}>
+          <div className="mt-6 pt-4 border-t text-center" style={{ borderColor: 'var(--text)', opacity: 0.2 }}>
             <div className="flex items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm flex-wrap">
               <button
-                className="hover:opacity-70 transition-opacity"
-                style={{ color: 'var(--text)', opacity: 0.6 }}
+                className="hover:opacity-80 transition-opacity"
+                style={{ color: 'var(--text)', opacity: 0.7 }}
                 onClick={() => {
                   // Cookie preferences - placeholder
                   alert("Cookie preferences coming soon!");
@@ -481,10 +517,10 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
               >
                 Cookie Preferences
               </button>
-              <span style={{ color: 'var(--text)', opacity: 0.3 }}>•</span>
+              <span style={{ color: 'var(--text)', opacity: 0.4 }}>•</span>
               <button
-                className="hover:opacity-70 transition-opacity"
-                style={{ color: 'var(--text)', opacity: 0.6 }}
+                className="hover:opacity-80 transition-opacity"
+                style={{ color: 'var(--text)', opacity: 0.7 }}
                 onClick={() => {
                   // Report - placeholder
                   alert("Report feature coming soon!");
@@ -492,10 +528,10 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
               >
                 Report
               </button>
-              <span style={{ color: 'var(--text)', opacity: 0.3 }}>•</span>
+              <span style={{ color: 'var(--text)', opacity: 0.4 }}>•</span>
               <button
-                className="hover:opacity-70 transition-opacity"
-                style={{ color: 'var(--text)', opacity: 0.6 }}
+                className="hover:opacity-80 transition-opacity"
+                style={{ color: 'var(--text)', opacity: 0.7 }}
                 onClick={() => {
                   // Privacy - placeholder
                   window.open("/privacy", "_blank");
@@ -506,6 +542,20 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Theme Toggles - Bottom Right */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-3 items-end">
+        {/* Dark/Light Mode Toggle */}
+        <div className="glass p-2 rounded-2xl shadow-soft-lg" style={{ backgroundColor: 'var(--glass-bg)', borderColor: 'var(--glass-border)' }}>
+          <ThemeToggle />
+        </div>
+        
+        {/* Profile Theme Toggle */}
+        <ProfileThemeToggle 
+          currentTheme={theme as ThemeName} 
+          onThemeChange={handleThemeChange}
+        />
       </div>
     </div>
   );

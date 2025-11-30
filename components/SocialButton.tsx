@@ -179,24 +179,30 @@ export default function SocialButton({ platform, url, onClick, onShare }: Social
         onClick={handleClick}
         className="w-full px-6 py-5 glass border border-gray-200/50 dark:border-gray-700/50 rounded-2xl hover:border-primary-500/50 dark:hover:border-primary-400/50 transition-all duration-300 hover:shadow-glow hover:scale-[1.02] text-left flex items-center gap-4 group"
       >
-        <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${color} flex items-center justify-center text-white shadow-soft group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 flex-shrink-0`}>
-          {icon}
-        </div>
-        <span className="font-heading font-semibold text-gray-900 dark:text-white text-lg flex-1" style={{ color: 'var(--text)' }}>
-          {platform}
-        </span>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowMenu(!showMenu);
-          }}
-          className="menu-button p-2 rounded-lg hover:bg-white/20 dark:hover:bg-white/10 transition-colors"
-          aria-label="More options"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: 'var(--text)' }}>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-          </svg>
-        </button>
+      <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${color} flex items-center justify-center text-white shadow-soft group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 flex-shrink-0`}>
+        {icon}
+      </div>
+      <span className="font-heading font-semibold text-lg flex-1" style={{ color: 'var(--text)' }}>
+        {platform}
+      </span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowMenu(!showMenu);
+        }}
+        className="menu-button p-2 rounded-lg transition-colors"
+        style={{ 
+          color: 'var(--text)',
+          opacity: 0.6
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+        onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
+        aria-label="More options"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+        </svg>
+      </button>
       </button>
 
       {/* Dropdown Menu */}
