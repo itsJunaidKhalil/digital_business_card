@@ -493,7 +493,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
 
                   const platformColor = getPlatformColor(link.platform);
                   const icon = platformData?.icon || (
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                     </svg>
@@ -506,15 +506,14 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => handleLinkClick(link.id)}
-                      className="w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-glow shadow-soft-lg"
+                      className="w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-glow shadow-md"
                       style={{ 
                         background: platformColor.bg,
-                        color: platformColor.icon,
                         border: 'none',
                       }}
                       aria-label={link.platform}
                     >
-                      <div className="w-6 h-6 flex items-center justify-center">
+                      <div className="w-5 h-5 flex items-center justify-center" style={{ color: platformColor.icon }}>
                         {icon}
                       </div>
                     </a>
