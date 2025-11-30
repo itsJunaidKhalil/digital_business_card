@@ -150,7 +150,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
   }, [links]);
 
   return (
-    <div data-theme={theme} className="min-h-screen bg-gradient-to-br from-neutral-bg via-white to-primary-50/20 dark:from-gray-900 dark:via-gray-900 dark:to-primary-900/10 text-[var(--text)] relative">
+    <div data-theme={theme} className="min-h-screen relative" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       <div className="max-w-2xl mx-auto">
         {/* Share Button - Top Right */}
         {profile.username && (
@@ -202,16 +202,16 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
               </div>
             )}
 
-            <h1 className="text-3xl sm:text-4xl font-heading font-bold mt-6 text-center text-gray-900 dark:text-white">
+            <h1 className="text-3xl sm:text-4xl font-heading font-bold mt-6 text-center" style={{ color: 'var(--text)' }}>
               {profile.full_name || profile.username || "Anonymous"}
             </h1>
             {profile.company && (
-              <p className="text-lg sm:text-xl text-primary-600 dark:text-primary-400 mt-2 text-center font-medium">
+              <p className="text-lg sm:text-xl mt-2 text-center font-medium" style={{ color: 'var(--text)', opacity: 0.8 }}>
                 {profile.company}
               </p>
             )}
             {profile.about && (
-              <p className="text-center text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6 max-w-md leading-relaxed">
+              <p className="text-center text-base sm:text-lg mt-6 max-w-md leading-relaxed" style={{ color: 'var(--text)', opacity: 0.9 }}>
                 {profile.about}
               </p>
             )}
@@ -222,11 +222,11 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
             {loadingLinks ? (
               <div className="glass p-8 rounded-3xl text-center shadow-soft">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto"></div>
-                <p className="mt-4 text-gray-500 dark:text-gray-400 text-sm">Loading links...</p>
+                <p className="mt-4 text-sm" style={{ color: 'var(--text)', opacity: 0.7 }}>Loading links...</p>
               </div>
             ) : links && links.length > 0 ? (
               <div className="space-y-4">
-                <h2 className="text-2xl font-heading font-semibold text-gray-900 dark:text-white mb-6 text-center sm:text-left">
+                <h2 className="text-2xl font-heading font-semibold mb-6 text-center sm:text-left" style={{ color: 'var(--text)' }}>
                   Connect with me
                 </h2>
                 {links.map((link) => (
@@ -240,7 +240,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
               </div>
             ) : (
               <div className="glass p-8 rounded-3xl text-center shadow-soft">
-                <p className="text-gray-500 dark:text-gray-400">No social links available yet</p>
+                <p style={{ color: 'var(--text)', opacity: 0.7 }}>No social links available yet</p>
               </div>
             )}
           </div>
@@ -248,7 +248,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
           {/* Contact Info Section */}
           {(profile.phone || profile.email || profile.website) && (
             <div className="glass p-6 sm:p-8 rounded-3xl shadow-soft-lg mb-8">
-              <h2 className="text-2xl font-heading font-semibold text-gray-900 dark:text-white mb-6 text-center sm:text-left">
+              <h2 className="text-2xl font-heading font-semibold mb-6 text-center sm:text-left" style={{ color: 'var(--text)' }}>
                 Contact Information
               </h2>
               <div className="space-y-4 text-base sm:text-lg">
@@ -262,7 +262,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
                     </div>
-                    <span className="text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors font-medium">
+                    <span className="font-medium transition-colors" style={{ color: 'var(--text)' }}>
                       {profile.phone}
                     </span>
                   </a>
@@ -277,7 +277,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <span className="text-gray-700 dark:text-gray-300 group-hover:text-secondary-600 dark:group-hover:text-secondary-400 transition-colors font-medium">
+                    <span className="font-medium transition-colors" style={{ color: 'var(--text)' }}>
                       {profile.email}
                     </span>
                   </a>
@@ -294,7 +294,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                       </svg>
                     </div>
-                    <span className="text-primary-600 dark:text-primary-400 group-hover:underline font-medium">
+                    <span className="font-medium group-hover:underline transition-colors" style={{ color: 'var(--text)' }}>
                       {profile.website}
                     </span>
                   </a>

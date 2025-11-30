@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import { getProfileById } from "@/lib/getProfile";
 import ThemeToggle from "./ThemeToggle";
+import TapTagLogo from "./TapTagLogo";
 
 export default function Navbar() {
   const router = useRouter();
@@ -62,12 +63,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link 
-              href={user ? "/dashboard" : "/"} 
-              className="text-2xl font-heading font-bold gradient-text hover:opacity-80 transition-opacity"
-            >
-              Digital Card
-            </Link>
+            <TapTagLogo 
+              href={user ? "/dashboard" : "/"}
+              size="md"
+            />
           </div>
           
           {/* Desktop Navigation */}
