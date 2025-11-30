@@ -180,7 +180,7 @@ export default function SocialButton({ platform, url, onClick, onShare }: Social
         className="w-full px-4 py-3 glass border border-gray-200/50 dark:border-gray-700/50 rounded-2xl hover:border-primary-500/50 dark:hover:border-primary-400/50 transition-all duration-300 hover:shadow-glow hover:scale-[1.02] text-left flex items-center gap-3 group"
       >
         <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${color} flex items-center justify-center text-white shadow-soft group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 flex-shrink-0`}>
-          <div className="w-5 h-5">
+          <div className="flex items-center justify-center [&>svg]:w-5 [&>svg]:h-5 [&>svg]:flex-shrink-0">
             {icon}
           </div>
         </div>
