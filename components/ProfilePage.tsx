@@ -473,8 +473,27 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                   const platformData = PLATFORMS.find(
                     (p) => p.name.toLowerCase() === link.platform.toLowerCase()
                   );
+                  
+                  // Get platform-specific brand colors
+                  const getPlatformColor = (platform: string) => {
+                    const platformLower = platform.toLowerCase();
+                    if (platformLower === 'instagram') return { bg: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', icon: '#FFFFFF' };
+                    if (platformLower === 'linkedin') return { bg: '#0077B5', icon: '#FFFFFF' };
+                    if (platformLower === 'facebook') return { bg: '#1877F2', icon: '#FFFFFF' };
+                    if (platformLower === 'youtube') return { bg: '#FF0000', icon: '#FFFFFF' };
+                    if (platformLower === 'twitter') return { bg: '#1DA1F2', icon: '#FFFFFF' };
+                    if (platformLower === 'github') return { bg: '#181717', icon: '#FFFFFF' };
+                    if (platformLower === 'tiktok') return { bg: '#000000', icon: '#FFFFFF' };
+                    if (platformLower === 'whatsapp') return { bg: '#25D366', icon: '#FFFFFF' };
+                    if (platformLower === 'email') return { bg: '#EA4335', icon: '#FFFFFF' };
+                    if (platformLower === 'phone') return { bg: '#34C759', icon: '#FFFFFF' };
+                    if (platformLower === 'website') return { bg: '#4285F4', icon: '#FFFFFF' };
+                    return { bg: 'var(--text)', icon: 'var(--bg)' };
+                  };
+
+                  const platformColor = getPlatformColor(link.platform);
                   const icon = platformData?.icon || (
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                     </svg>
@@ -487,17 +506,17 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => handleLinkClick(link.id)}
-                      className="w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-glow shadow-soft"
+                      className="w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-glow shadow-soft-lg"
                       style={{ 
-                        color: 'var(--text)', 
-                        backgroundColor: 'var(--card-bg)',
-                        border: '2px solid var(--card-border)',
-                        backdropFilter: 'blur(10px)',
-                        WebkitBackdropFilter: 'blur(10px)',
+                        background: platformColor.bg,
+                        color: platformColor.icon,
+                        border: 'none',
                       }}
                       aria-label={link.platform}
                     >
-                      {icon}
+                      <div className="w-6 h-6 flex items-center justify-center">
+                        {icon}
+                      </div>
                     </a>
                   );
                 })}
