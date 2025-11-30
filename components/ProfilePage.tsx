@@ -467,7 +467,7 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
 
           {/* Social Icons Footer */}
           {links && links.length > 0 && (
-            <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--text)', opacity: 0.2 }}>
+            <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--text)', opacity: 0.4 }}>
               <div className="flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
                 {links.map((link) => {
                   const platformData = PLATFORMS.find(
@@ -487,12 +487,13 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => handleLinkClick(link.id)}
-                      className="w-12 h-12 rounded-full glass flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-glow"
+                      className="w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-glow shadow-soft"
                       style={{ 
                         color: 'var(--text)', 
-                        backgroundColor: 'var(--glass-bg)',
-                        borderColor: 'var(--glass-border)',
-                        opacity: 0.9
+                        backgroundColor: 'var(--card-bg)',
+                        border: '2px solid var(--card-border)',
+                        backdropFilter: 'blur(10px)',
+                        WebkitBackdropFilter: 'blur(10px)',
                       }}
                       aria-label={link.platform}
                     >
@@ -505,11 +506,11 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
           )}
 
           {/* Footer Links */}
-          <div className="mt-6 pt-4 border-t text-center" style={{ borderColor: 'var(--text)', opacity: 0.2 }}>
+          <div className="mt-6 pt-4 border-t text-center" style={{ borderColor: 'var(--text)', opacity: 0.4 }}>
             <div className="flex items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm flex-wrap">
               <button
-                className="hover:opacity-80 transition-opacity"
-                style={{ color: 'var(--text)', opacity: 0.7 }}
+                className="hover:underline transition-all font-semibold"
+                style={{ color: 'var(--text)' }}
                 onClick={() => {
                   // Cookie preferences - placeholder
                   alert("Cookie preferences coming soon!");
@@ -517,10 +518,10 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
               >
                 Cookie Preferences
               </button>
-              <span style={{ color: 'var(--text)', opacity: 0.4 }}>•</span>
+              <span style={{ color: 'var(--text)', opacity: 0.7 }}>•</span>
               <button
-                className="hover:opacity-80 transition-opacity"
-                style={{ color: 'var(--text)', opacity: 0.7 }}
+                className="hover:underline transition-all font-semibold"
+                style={{ color: 'var(--text)' }}
                 onClick={() => {
                   // Report - placeholder
                   alert("Report feature coming soon!");
@@ -528,10 +529,10 @@ export default function ProfilePageContent({ profile }: ProfilePageProps) {
               >
                 Report
               </button>
-              <span style={{ color: 'var(--text)', opacity: 0.4 }}>•</span>
+              <span style={{ color: 'var(--text)', opacity: 0.7 }}>•</span>
               <button
-                className="hover:opacity-80 transition-opacity"
-                style={{ color: 'var(--text)', opacity: 0.7 }}
+                className="hover:underline transition-all font-semibold"
+                style={{ color: 'var(--text)' }}
                 onClick={() => {
                   // Privacy - placeholder
                   window.open("/privacy", "_blank");
