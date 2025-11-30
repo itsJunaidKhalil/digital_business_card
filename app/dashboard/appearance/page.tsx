@@ -7,6 +7,15 @@ import { getProfileById } from "@/lib/getProfile";
 import { themes, ThemeName } from "@/utils/themes";
 import Navbar from "@/components/Navbar";
 
+// Helper to notify user to refresh profile page
+const notifyProfileUpdate = (username: string) => {
+  if (typeof window !== "undefined") {
+    // If profile is open in another tab, it will pick up the change on next load
+    // We can't directly refresh other tabs for security reasons
+    console.log(`Theme updated! Visit /${username} to see the changes.`);
+  }
+};
+
 export default function AppearancePage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -62,12 +71,27 @@ export default function AppearancePage() {
       });
 
       const result = await response.json();
+      console.log("Theme update response:", result);
 
-      if (!response.ok || result.error) {
-        throw new Error(result.error || "Failed to update theme");
+      if (!response.ok) {
+        const errorMessage = result.error || result.message || "Failed to update theme";
+        console.error("Theme update error:", errorMessage);
+        throw new Error(errorMessage);
       }
 
-      setProfile({ ...profile, theme });
+      // The API returns { data: {...profile}, error: null }
+      // Update profile state with the new theme
+      const updatedProfile = result.data || {};
+      const updatedTheme = updatedProfile.theme || theme;
+      
+      console.log("Updated theme:", updatedTheme);
+      setProfile({ ...profile, theme: updatedTheme });
+      
+      // Notify about profile update
+      if (profile?.username) {
+        notifyProfileUpdate(profile.username);
+      }
+      
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (error: any) {
@@ -113,9 +137,23 @@ export default function AppearancePage() {
 
         {success && (
           <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl shadow-soft">
-            <p className="text-sm text-green-600 dark:text-green-400">
-              Theme updated successfully!
+            <p className="text-sm text-green-600 dark:text-green-400 font-semibold mb-2">
+              ✓ Theme updated successfully!
             </p>
+            {profile?.username && (
+              <p className="text-xs text-green-700 dark:text-green-300">
+                Visit{" "}
+                <a
+                  href={`/${profile.username}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline font-medium hover:text-green-800 dark:hover:text-green-200"
+                >
+                  your profile
+                </a>{" "}
+                to see the changes.
+              </p>
+            )}
           </div>
         )}
 

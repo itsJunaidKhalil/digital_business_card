@@ -103,7 +103,9 @@ export default function DashboardPage() {
             className="glass p-6 sm:p-8 rounded-3xl shadow-soft-lg hover:shadow-glow transition-all duration-300 transform hover:-translate-y-2 group"
           >
             <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mb-4 shadow-soft group-hover:scale-110 transition-transform">
-              <span className="text-3xl">👤</span>
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
             </div>
             <h2 className="text-2xl font-heading font-semibold mb-3 text-gray-900 dark:text-white">Profile</h2>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -116,7 +118,9 @@ export default function DashboardPage() {
             className="glass p-6 sm:p-8 rounded-3xl shadow-soft-lg hover:shadow-glow transition-all duration-300 transform hover:-translate-y-2 group"
           >
             <div className="w-16 h-16 bg-gradient-secondary rounded-2xl flex items-center justify-center mb-4 shadow-soft group-hover:scale-110 transition-transform">
-              <span className="text-3xl">🔗</span>
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
             </div>
             <h2 className="text-2xl font-heading font-semibold mb-3 text-gray-900 dark:text-white">Social Links</h2>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -129,7 +133,9 @@ export default function DashboardPage() {
             className="glass p-6 sm:p-8 rounded-3xl shadow-soft-lg hover:shadow-glow transition-all duration-300 transform hover:-translate-y-2 group"
           >
             <div className="w-16 h-16 bg-gradient-accent rounded-2xl flex items-center justify-center mb-4 shadow-soft group-hover:scale-110 transition-transform">
-              <span className="text-3xl">🎨</span>
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+              </svg>
             </div>
             <h2 className="text-2xl font-heading font-semibold mb-3 text-gray-900 dark:text-white">Appearance</h2>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -142,7 +148,9 @@ export default function DashboardPage() {
             className="glass p-6 sm:p-8 rounded-3xl shadow-soft-lg hover:shadow-glow transition-all duration-300 transform hover:-translate-y-2 group"
           >
             <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mb-4 shadow-soft group-hover:scale-110 transition-transform">
-              <span className="text-3xl">📊</span>
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
             </div>
             <h2 className="text-2xl font-heading font-semibold mb-3 text-gray-900 dark:text-white">Analytics</h2>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
